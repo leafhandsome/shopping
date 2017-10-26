@@ -79,7 +79,7 @@
                                         <dt>购买数量</dt>
                                         <dd>
                                             <div class="stock-box">
-                                                <el-input-number v-model="buyCount"  :min="1">
+                                                <el-input-number v-model="buyCount"  :min="1" :max="10">
                                                 </el-input-number>
                                             </div>
                                             <span class="stock-txt">
@@ -91,8 +91,10 @@
                                     <dl>
                                         <dd>
                                             <div class="btn-buy" id="buyButton">
+                                              <router-link to="/site/jqcar">
                                                 <button class="buy">立即购买</button>
-                                                <button class="add" >加入购物车</button>
+                                                </router-link>
+                                                <button class="add" @click="addCar">加入购物车</button>
                                             </div>
                                         </dd>
                                     </dl>
@@ -220,10 +222,10 @@ import Affix from 'iview/src/components/affix';
 
 
 // 导入vm
-// import {vm,key} from '../../kits/vm.js';
+ import {vm,key} from '../../kits/vm.js';
 
 // 导入localStoageKit.js
-// import {setItem} from '../../kits/localStorageKit.js';
+import {setItem} from '../../kits/localStorageKit.js';
 
 // 导入jquery插件文件
 import '../../../statics/site/js/jqplugins/imgzoom/magnifier.js';
@@ -265,17 +267,19 @@ $(function() {
         },
         methods: { 
             // // 点击加入购物车按钮的时候触发   
-            // addCar(){
+             addCar(){
             //     // 通过导入 vm.js来触发事件
-            //     // vm.$emit(key,this.buyCount);
+            vm.$emit(key,this.buyCount);
 
             //     // 1.0 通过vuex进行触发 changeBuyCount
-            //     this.$store.dispatch('changeBuyCount',this.buyCount);
+                this.$store.dispatch('changeBuyCount',this.buyCount);
 
             //     // 2.0 将商品的id和当前购买数量存储到localStorage中
-            //     setItem({gid:this.$route.params.goodsid,bcount:this.buyCount});
+            console.log(this.buyCount);
+            
+                setItem({gid:this.$route.params.goodsid,bcount:this.buyCount});
 
-            // } ,    
+             } ,    
             // 当用户点击分页组件中的分页页码的时候触发
             pageIndexChange(val){
                 // val 代表当前用户选择的页码

@@ -15,7 +15,7 @@
                         <strong>|</strong>
                         <router-link to="/site/car">
                         <i class="iconfont icon-cart"></i>
-                         购物车(<span id="shoppingCartCount">2</span>)
+                         购物车(<span id="shoppingCartCount">{{buycount}}</span>)
                     </router-link>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
 
 <script>
 
-// import {vm,key} from '../../kits/vm.js';
+ import {vm,key} from '../../kits/vm.js';
 
 // 实现菜单的翻滚
 $(function(){
@@ -100,7 +100,7 @@ $(function(){
 
 });
 
-// import {getItem} from '../../kits/localStorageKit.js';
+import {getItem} from '../../kits/localStorageKit.js';
 
   export default{
     data(){
@@ -109,10 +109,10 @@ $(function(){
         }
     },
     mounted(){
-        // vm.$on(key,(buycount)=>{
-        //     // 修改购物车中的数值,
-        //     this.buycount += buycount;
-        // });
+        vm.$on(key,(buycount)=>{
+            this.buycount+=buycount;
+        })
+        
 
         // 在此处读取localStorage中的所有商品的个数
     //   var goodsObj = getItem();
@@ -120,6 +120,7 @@ $(function(){
     //   for(key in goodsObj){
     //      count++;
     //   }
+    //   console.log(count);
       
 
     }
