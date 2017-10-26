@@ -3,6 +3,8 @@ var path = require('path');
 // 这个包的作用就是在内存中自动生成一个index.html页面
 var htmlwp = require("html-webpack-plugin");
 
+var webpack = require('webpack');
+
 // 此配置文件在控制台上使用 webpack 的时候后面如果不加任何参数，则默认会查找 webpack.config.js的配置文件去执行
 module.exports={
     // 1.0 配置打包时的入口文件
@@ -13,6 +15,14 @@ module.exports={
         // path.join() 将多个路径拼接成一个路径，不管/分隔符有几个均可以
         path:path.join(__dirname,'/dist'),
         filename:'build.js'  
+    },
+    resolve:{
+        alias: {
+            // webpack 使用 jQuery，如果是自行下载的
+            // 'jquery': path.join(__dirname, 'jquery所在的目录/jquery.min'),
+            // 如果使用NPM安装的jQuery
+            'jquery': 'jquery'       
+        }
     },
     // 3.0 配置相关的loader
     module:{
@@ -37,7 +47,7 @@ module.exports={
             // 配置图片的正则表达式和loader
             {
                 // 表示匹配.png,.jpg,.gif的任一一个
-                test:/\.(png|jpg|gif|ttf|woff)$/,
+                test:/\.(png|jpg|gif|ttf|woff|eot|svg)$/,
                 // url-loader这种写法不管图片大小均以base64的形式打包到build.js中,那么如果图片很大的话，会导致
                 //build.js文件也很大，性能低下
                 // loader:['url-loader']  
@@ -50,6 +60,7 @@ module.exports={
                 test:/\.vue$/,
                 loader:['vue-loader']
             },
+            { test: /iview.src.*?js$/, loader: 'babel-loader' },
             // 如果使用的webpack1.0的话这个配置就会起作用
             {
                 // es6语法通常是写在 .js文件中
@@ -64,6 +75,11 @@ module.exports={
         new htmlwp({
             filename:'index.html',
             template:'index1.html'
+        }),
+        // 配置$指向 jquery对象的,在任何组件中均可以使用 $()和jQuery()两种写法
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"         
         })
     ]
 }
