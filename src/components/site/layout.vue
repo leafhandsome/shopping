@@ -10,10 +10,19 @@
                         <a target="_blank" href="#"></a>
                     </div>
                     <div id="menu" class="right-box">
-                        <a href="/login.html">登录</a>
+                      <div v-if="!isloginshow">
+                            <router-link to="/site/login">
+                        登录</router-link>
                         <a href="/register.html">注册</a>
+                      </div>
+                        <div v-if="isloginshow">
+                              <router-link to="/site/vipcenter">
+                        个人中心</router-link>
+                    <span class="cous" @click="gotoout">退出</span>
+                       
+                        </div>
                         <strong>|</strong>
-                        <router-link to="/site/car">
+                        <router-link to="/site/jqcar">
                         <i class="iconfont icon-cart"></i>
                          购物车(<span id="shoppingCartCount">{{buycount}}</span>)
                     </router-link>
@@ -79,58 +88,103 @@
 </template>
 
 <script>
+    import {
+        vm,
+        key
+    } from '../../kits/vm.js';
 
- import {vm,key} from '../../kits/vm.js';
+    // 实现菜单的翻滚
+    $(function() {
+        $("#menu2 li a").wrapInner('<span class="out"></span>');
+        $("#menu2 li a").each(function() {
+            $('<span class="over">' + $(this).text() + '</span>').appendTo(this);
+        });
 
-// 实现菜单的翻滚
-$(function(){
-	$("#menu2 li a").wrapInner( '<span class="out"></span>' );
-	$("#menu2 li a").each(function() {
-		$( '<span class="over">' +  $(this).text() + '</span>' ).appendTo( this );
-	});
+        $("#menu2 li a").hover(function() {
+            $(".out", this).stop().animate({
+                'top': '48px'
+            }, 300); // move down - hide
+            $(".over", this).stop().animate({
+                'top': '0px'
+            }, 300); // move down - show
 
-	$("#menu2 li a").hover(function() {
-		$(".out",	this).stop().animate({'top':	'48px'},	300); // move down - hide
-		$(".over",	this).stop().animate({'top':	'0px'},		300); // move down - show
+        }, function() {
+            $(".out", this).stop().animate({
+                'top': '0px'
+            }, 300); // move up - show
+            $(".over", this).stop().animate({
+                'top': '-48px'
+            }, 300); // move up - hide
+        });
 
-	}, function() {
-		$(".out",	this).stop().animate({'top':	'0px'},		300); // move up - show
-		$(".over",	this).stop().animate({'top':	'-48px'},	300); // move up - hide
-	});
+    });
 
-});
+    import {
+        getItem
+    } from '../../kits/localStorageKit.js';
+    export default {
+        data() {
+            return {
+                buycount: 0,
+                isloginshow: false,
+            }
+        },
+        created() {
+            vm.$on('changeshow', () => {
+                // 1.0 获取到localStorage中的key="islogin"对应的值
+                this.logined();
+            })
+            this.logined()
+        },
+        methods: {
+            logined() {
+                var islogin = localStorage.getItem('islogin');
+                if (islogin = true) {
+                    this.isloginshow = true
+                } else {
+                    this.isloginshow = false;
+                }
+            },
+            gotoout() {
+                this.$http.get('/site/account/logout').then(res => {
+                    // 2.0 改变当前的isvipshow的值即可
+                    this.isloginshow = false;
 
-import {getItem} from '../../kits/localStorageKit.js';
+                    // 3.0 将localStorage中的值修改成false
+                    localStorage.setItem('islogin', false);
+                });
+            },
+            getbuy() {
+                vm.$on(key, (buycount) => {
+                    this.buycount += buycount;
+                })
 
-  export default{
-    data(){
-        return {
-            buycount:0
+
+                // 在此处读取localStorage中的所有商品的个数
+                var goodsObj = getItem();
+
+                var count = 0;
+                for (var key in goodsObj) {
+                    count++;
+                }
+                this.buycount = count;
+                console.log(count);
+            }
+
+
+        },
+        mounted() {
+            this.getbuy();
         }
-    },
-    mounted(){
-        vm.$on(key,(buycount)=>{
-            this.buycount+=buycount;
-        })
-        
-
-        // 在此处读取localStorage中的所有商品的个数
-    //   var goodsObj = getItem();
-    //   var count = 0;
-    //   for(key in goodsObj){
-    //      count++;
-    //   }
-    //   console.log(count);
-      
-
     }
-  }
-
 </script>
 
 <style>
     /* 为了解决统一导入elemenui的样式,所以要放到layout.vue */
     /* 导入样式的格式  @import url() */
+    
     @import url('../../../statics/elementuiCss/index.css');
-
+    .cous {
+        cursor: pointer;
+    }
 </style>

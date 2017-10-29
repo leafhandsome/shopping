@@ -90,12 +90,12 @@
                     <li class="list_amount">
                         <div class="amount_box">
                             <a href="javascript:;" class="reduce reSty">-</a>
-                            <input type="text" value="1" class="sum">
+                            <input type="text" value="1"  class="sum">
                             <a href="javascript:;" class="plus">+</a>
                         </div>
                     </li>
                     <li class="list_sum">
-                        <p class="sum_price">￥980</p>
+                        <p class="sum_price">998</p>
                     </li>
                     <li class="list_op">
                         <p class="del"><a href="javascript:;" class="delBtn">移除商品</a></p>
@@ -111,7 +111,9 @@
             <div class="bar-right">
                 <div class="piece">已选商品<strong class="piece_num">0</strong>件</div>
                 <div class="totalMoney">共计: <strong class="total_text">0.00</strong></div>
+                <router-link v-bind="{to:'/site/shopping/'+idstr}">
                 <div class="calBtn"><a href="javascript:;">结算</a></div>
+                </router-link>
             </div>
         </div>
     </section>
@@ -128,12 +130,14 @@
           </div> 
 </template>
  <script>
-import '../../../statics/theme_rms/js/carts.js';
+
 import {getItem} from '../../kits/localStorageKit.js';
    export default{
      data(){
         return{
           // ischeck:false,
+        //   val:{},
+        idstr:"",
           list:[] 
         }
      },
@@ -146,31 +150,32 @@ import {getItem} from '../../kits/localStorageKit.js';
       //  },
  getgoodslist() {
       var goodsObj = getItem();
-      console.log(goodsObj);
+    //   this.val=goodsObj;
+    //   console.log(goodsObj);
       // 将ids用，分开
       var idsArr = []
       for (var key in goodsObj) {
         idsArr.push(key)
       }
-      var idstr = idsArr.join(',')
+      var idstr = idsArr.join(',');
+      this.idstr=idstr;
       //请求接口渲染页面 /site/comment/getshopcargoods/:ids
       this.$http.get('/site/comment/getshopcargoods/' + idstr).then(res => {
         if (res.data.status == 1) {
           this.$message.error('请求购物商品失败');
         }
         this.list = res.data.message;
-        console.log(this.list);
-          setTimeout(function() {
-            
+     
+        //   setTimeout(function() {
 
-          }, 100);
+        //   }, 100);
       })
 
     }
      }
    }
 
- 
+ import '../../../statics/theme_rms/js/carts.js';
  </script>
     <style scoped>
     @import url('../../../statics/theme_rms/css/carts.css');

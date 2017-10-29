@@ -22,18 +22,29 @@ import goodslist from './components/site/goodslist.vue';
 // 导入商品详情组件
 import goodsinfo from './components/site/goodsinfo.vue';
 import jqcar from './components/site/jqcar.vue';
-
+import shopping from './components/site/shopping.vue';
+import login from './components/site/login.vue';
+import shoppingmall from './components/site/shoppingmall.vue';
+import payamount from './components/site/payamount.vue';
+import play from './components/site/play.vue';
+import vipcenter from './components/site/vipcenter.vue';
 var router = new vueRouter({
     routes: [
         { name: 'default', path: '/', redirect: '/site' },
+        { name: 'play', path: '/play/:orderid/:amount', component: play },
         {
             name: 'layout',
             path: '/site',
             component: layout,
             children: [
+                { name: 'login', path: 'login', component: login },
                 { name: 'goodslist', path: 'goodslist', component: goodslist }, //商品列表的路由规则
                 { name: 'goodsinfo', path: 'goodsinfo/:goodsid', component: goodsinfo },
                 { name: 'jqcar', path: 'jqcar', component: jqcar },
+                { name: 'shopping', path: 'shopping/:ids', component: shopping, meta: { islogin: true } },
+                { name: 'shoppingmall', path: 'shoppingmall/:orderid', component: shoppingmall, meta: { islogin: true } },
+                { name: 'payamount', path: 'payamount', component: payamount },
+                { name: 'vipcenter', path: 'vipcenter', component: shoppingmall, meta: { islogin: true } },
             ]
         }
     ]
@@ -88,7 +99,27 @@ Vue.filter('datefmt', (input, fmtstring) => {
     }
 
 });
+//全局守卫
+router.beforeEach((to, from, next) => {
+    // to and from are both route objects
+    if (to.name !== 'login') {
+        localStorage.setItem('routerName', to.name);
+    }
+    if (to.meta.islogin) {
+        //要登录检查
+        axios.get('/site/account/islogin').then(res => {
 
+            if (res.data.code == "nologin") {
+                router.push({ name: 'login' })
+            }
+            if (res.data.code == 'logined') {
+                next()
+            }
+        })
+    } else {
+        next()
+    }
+})
 
 // 定义vuex实现购物车数量的改变业务
 // 1.0 数据对象
