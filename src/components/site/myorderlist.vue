@@ -103,7 +103,7 @@
                                                             {{item.statusName}}
                                                         </td>
                                                         <td align="left">
-                                                            <router-link v-bind="{to:'/site/vip/orderdetial/'+item.id}">查看订单</router-link>
+                                                            <router-link v-bind="{to:'/site/orderdetial/'+item.id}">查看订单</router-link>
                                                             <br>
                                                             <router-link v-if="item.status<=1" v-bind="{to:'/site/shoppingmall/'+item.id}">|去付款</router-link>
                                                             <br>
@@ -143,7 +143,7 @@
         data() {
             return {
                 pageSize:10,
-                pageIndex:10,
+                pageIndex:1,
                 totalCount:0,
                 // 存放登录用户下的订单数据数组
                 orderlist:[]
