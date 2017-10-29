@@ -28,6 +28,7 @@ import shoppingmall from './components/site/shoppingmall.vue';
 import payamount from './components/site/payamount.vue';
 import play from './components/site/play.vue';
 import vipcenter from './components/site/vipcenter.vue';
+import myorderlist from './components/site/myorderlist.vue';
 var router = new vueRouter({
     routes: [
         { name: 'default', path: '/', redirect: '/site' },
@@ -44,7 +45,8 @@ var router = new vueRouter({
                 { name: 'shopping', path: 'shopping/:ids', component: shopping, meta: { islogin: true } },
                 { name: 'shoppingmall', path: 'shoppingmall/:orderid', component: shoppingmall, meta: { islogin: true } },
                 { name: 'payamount', path: 'payamount', component: payamount },
-                { name: 'vipcenter', path: 'vipcenter', component: shoppingmall, meta: { islogin: true } },
+                { name: 'vipcenter', path: 'vipcenter', component: vipcenter, meta: { islogin: true } },
+                { name: 'myorderlist', path: 'myorderlist', component: myorderlist, meta: { islogin: true } },
             ]
         }
     ]
